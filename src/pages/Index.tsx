@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Users, Shield, BarChart3, Heart, Leaf, Headphones } from "lucide-react";
 import EmergencyResources from "@/components/EmergencyResources";
-import mascotImage from "@/assets/uniheal-mascot.png";
+import mascotImage from "@/assets/sprout-mascot.png";
 
 const Index = () => {
   const navigate = useNavigate();

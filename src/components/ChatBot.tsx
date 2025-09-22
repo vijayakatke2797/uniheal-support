@@ -162,8 +162,12 @@ const ChatBot = () => {
   const handleBooking = () => {
     addMessage("Yes, I'd like to book a session", 'user');
     setTimeout(() => {
-      addMessage("Great! I'll connect you with our booking system. A counselor will reach out within 24 hours to schedule a session that works for you.", 'bot');
+      addMessage("Great! I'll redirect you to our booking system where you can choose your preferred date and time.", 'bot');
       setShowBooking(false);
+      // Redirect to booking page
+      setTimeout(() => {
+        window.location.href = '/booking';
+      }, 1500);
     }, 1000);
   };
 
