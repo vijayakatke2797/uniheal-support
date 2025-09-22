@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to your UNIHEAL project
 
 ## Project info
 
@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/215bbb74-4b2a-4902-8889-fe2d9368de95) and start prompting.
+Simply visit the [UNIJEAL Project](https://lovable.dev/projects/215bbb74-4b2a-4902-8889-fe2d9368de95) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
