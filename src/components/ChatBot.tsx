@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Send, Calendar } from "lucide-react";
-import mascotImage from "@/assets/uniheal-mascot.png";
+import mascotImage from "@/assets/sprout-mascot.png";
 
 interface Message {
   id: number;
@@ -17,6 +17,9 @@ interface ScreeningData {
   stress: number;
   anxiety: number;
   mood: number;
+  examStress: number;
+  socialSupport: number;
+  selfHarm: number;
 }
 
 const ChatBot = () => {
@@ -30,7 +33,7 @@ const ChatBot = () => {
   ]);
   const [inputText, setInputText] = useState("");
   const [currentStep, setCurrentStep] = useState<'greeting' | 'screening' | 'results'>('greeting');
-  const [screeningData, setScreeningData] = useState<ScreeningData>({ stress: 0, anxiety: 0, mood: 0 });
+  const [screeningData, setScreeningData] = useState<ScreeningData>({ stress: 0, anxiety: 0, mood: 0, examStress: 0, socialSupport: 0, selfHarm: 0 });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
 
@@ -49,6 +52,21 @@ const ChatBot = () => {
       category: 'mood' as keyof ScreeningData,
       question: "How would you rate your overall mood and energy levels lately?",
       options: ["Great - energetic and positive (0)", "Good - mostly stable (1)", "Low - feeling down often (2)", "Very low - persistent sadness (3)"]
+    },
+    {
+      category: 'examStress' as keyof ScreeningData,
+      question: "How do you feel about upcoming exams or major assignments?",
+      options: ["Confident and prepared (0)", "Somewhat nervous but manageable (1)", "Very anxious and overwhelmed (2)", "Panicked and unable to cope (3)"]
+    },
+    {
+      category: 'socialSupport' as keyof ScreeningData,
+      question: "How connected do you feel to friends, family, or support systems?",
+      options: ["Very connected and supported (0)", "Somewhat connected (1)", "Feel isolated sometimes (2)", "Feel very alone and disconnected (3)"]
+    },
+    {
+      category: 'selfHarm' as keyof ScreeningData,
+      question: "In the past few weeks, have you had thoughts of hurting yourself or that life isn't worth living?",
+      options: ["Never (0)", "Rarely, just passing thoughts (1)", "Sometimes think about it (2)", "Often or have made plans (3)"]
     }
   ];
 
@@ -101,14 +119,29 @@ const ChatBot = () => {
   };
 
   const showResults = () => {
-    const totalScore = screeningData.stress + screeningData.anxiety + screeningData.mood;
+    const totalScore = screeningData.stress + screeningData.anxiety + screeningData.mood + screeningData.examStress + screeningData.socialSupport + screeningData.selfHarm;
+    const suicidalRisk = screeningData.selfHarm >= 2;
     let resultMessage = "";
     let riskLevel = "";
 
-    if (totalScore <= 3) {
+    // Check for suicidal ideation first
+    if (suicidalRisk) {
+      riskLevel = "Critical";
+      resultMessage = "I'm very concerned about what you've shared. Your safety is the most important thing right now. Please know that you're not alone and there are people who want to help you.";
+      
+      addMessage(`Assessment complete! Risk level: ${riskLevel}. ${resultMessage}`, 'bot');
+      
+      setTimeout(() => {
+        addMessage("I strongly encourage you to reach out for immediate support. Would you like me to connect you with emergency resources or help you book an urgent counseling session?", 'bot');
+        setShowBooking(true);
+      }, 2000);
+      return;
+    }
+
+    if (totalScore <= 6) {
       riskLevel = "Low";
       resultMessage = "Based on your responses, you seem to be managing well overall! It's great that you're checking in with yourself. Keep up the good self-care habits.";
-    } else if (totalScore <= 6) {
+    } else if (totalScore <= 12) {
       riskLevel = "Moderate";
       resultMessage = "I notice you might be experiencing some stress or challenges. This is completely normal for students. Consider some relaxation techniques or talking to someone you trust.";
     } else {
@@ -118,7 +151,7 @@ const ChatBot = () => {
 
     addMessage(`Assessment complete! Risk level: ${riskLevel}. ${resultMessage}`, 'bot');
     
-    if (totalScore > 3) {
+    if (totalScore > 6) {
       setTimeout(() => {
         addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
         setShowBooking(true);
