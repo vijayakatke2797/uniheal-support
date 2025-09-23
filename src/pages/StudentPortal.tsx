@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, LogIn, Leaf, Headphones, Shield } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
 import EmergencyResources from "@/components/EmergencyResources";
+import QuickResources from "@/components/QuickResources";
 
 const StudentPortal = () => {
   const navigate = useNavigate();
@@ -182,25 +183,7 @@ const StudentPortal = () => {
             </Card>
 
             {/* Quick Resources */}
-            <Card className="bg-gradient-card shadow-card">
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Resources</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  📚 Study Stress Tips
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  😌 Breathing Exercises
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  💤 Sleep Hygiene Guide
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  🤝 Campus Support Groups
-                </Button>
-              </CardContent>
-            </Card>
+            <QuickResources />
 
             {/* Emergency Resources */}
             <EmergencyResources />
