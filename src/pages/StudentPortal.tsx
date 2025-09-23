@@ -5,15 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogIn, Leaf, Headphones, Shield } from "lucide-react";
+import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
 import EmergencyResources from "@/components/EmergencyResources";
 import QuickResources from "@/components/QuickResources";
+import AssessmentModal from "@/components/AssessmentModal";
 
 const StudentPortal = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentials, setCredentials] = useState({ studentId: "", password: "" });
+  const [showAssessment, setShowAssessment] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,6 +184,51 @@ const StudentPortal = () => {
               </CardContent>
             </Card>
 
+            {/* Quick Assessment */}
+            <Card className="bg-gradient-card shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Brain className="h-5 w-5" />
+                  Quick Assessment
+                </CardTitle>
+                <CardDescription>
+                  Take a comprehensive mental health assessment
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => setShowAssessment(true)}
+                    className="w-full gap-2"
+                    variant="outline"
+                  >
+                    <Activity className="h-4 w-4" />
+                    Start Assessment
+                  </Button>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="space-y-1">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                        <Brain className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Academic</p>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                        <Heart className="h-4 w-4 text-green-600" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Mood</p>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                        <Shield className="h-4 w-4 text-red-600" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Safety</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Quick Resources */}
             <QuickResources />
 
@@ -190,6 +237,15 @@ const StudentPortal = () => {
           </div>
         </div>
       </main>
+      
+      <AssessmentModal 
+        open={showAssessment}
+        onOpenChange={setShowAssessment}
+        onComplete={(result) => {
+          console.log('Assessment completed:', result);
+          // Could integrate with chatbot or show results
+        }}
+      />
     </div>
   );
 };

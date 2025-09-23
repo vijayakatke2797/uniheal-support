@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Send, Calendar } from "lucide-react";
+import { Send, Calendar, Brain } from "lucide-react";
 import mascotImage from "@/assets/sprout-mascot.png";
+import AssessmentModal from "./AssessmentModal";
 
 interface Message {
   id: number;
@@ -13,61 +14,36 @@ interface Message {
   timestamp: Date;
 }
 
-interface ScreeningData {
-  stress: number;
-  anxiety: number;
-  mood: number;
-  examStress: number;
-  socialSupport: number;
-  selfHarm: number;
+interface AssessmentResult {
+  academicStress: number;
+  moodMotivation: number;
+  suicidalRisk: number;
+  totalScore: number;
+  riskLevel: 'Low' | 'Moderate' | 'High' | 'Critical';
+  recommendations: string[];
 }
 
 const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hi there! I'm Sprout, your mental health companion. I'm here to help you check in with yourself today. How are you feeling?",
+      text: "Hi there! I'm Sprout, your mental health companion. I'm here to listen and support you. What's on your mind today?",
       sender: 'bot',
       timestamp: new Date()
     }
   ]);
   const [inputText, setInputText] = useState("");
-  const [currentStep, setCurrentStep] = useState<'greeting' | 'screening' | 'results'>('greeting');
-  const [screeningData, setScreeningData] = useState<ScreeningData>({ stress: 0, anxiety: 0, mood: 0, examStress: 0, socialSupport: 0, selfHarm: 0 });
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [conversationCount, setConversationCount] = useState(0);
+  const [showAssessment, setShowAssessment] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [assessmentResult, setAssessmentResult] = useState<AssessmentResult | null>(null);
 
-  const screeningQuestions = [
-    { 
-      category: 'stress' as keyof ScreeningData,
-      question: "Over the past week, how often have you felt overwhelmed by academic pressure?",
-      options: ["Not at all (0)", "Occasionally (1)", "Often (2)", "Almost constantly (3)"]
-    },
-    {
-      category: 'anxiety' as keyof ScreeningData,
-      question: "How often do you experience worry or nervousness about your future?",
-      options: ["Rarely (0)", "Sometimes (1)", "Frequently (2)", "Almost always (3)"]
-    },
-    {
-      category: 'mood' as keyof ScreeningData,
-      question: "How would you rate your overall mood and energy levels lately?",
-      options: ["Great - energetic and positive (0)", "Good - mostly stable (1)", "Low - feeling down often (2)", "Very low - persistent sadness (3)"]
-    },
-    {
-      category: 'examStress' as keyof ScreeningData,
-      question: "How do you feel about upcoming exams or major assignments?",
-      options: ["Confident and prepared (0)", "Somewhat nervous but manageable (1)", "Very anxious and overwhelmed (2)", "Panicked and unable to cope (3)"]
-    },
-    {
-      category: 'socialSupport' as keyof ScreeningData,
-      question: "How connected do you feel to friends, family, or support systems?",
-      options: ["Very connected and supported (0)", "Somewhat connected (1)", "Feel isolated sometimes (2)", "Feel very alone and disconnected (3)"]
-    },
-    {
-      category: 'selfHarm' as keyof ScreeningData,
-      question: "In the past few weeks, have you had thoughts of hurting yourself or that life isn't worth living?",
-      options: ["Never (0)", "Rarely, just passing thoughts (1)", "Sometimes think about it (2)", "Often or have made plans (3)"]
-    }
+  const conversationPrompts = [
+    "That sounds challenging. Can you tell me more about what's been going on?",
+    "I hear you. It's completely normal to feel this way sometimes. What's been the most difficult part?",
+    "Thank you for sharing that with me. How long have you been feeling this way?",
+    "I appreciate your openness. What usually helps you when you're going through tough times?",
+    "It sounds like you're dealing with a lot right now. Have you been able to talk to anyone else about this?"
   ];
 
   const addMessage = (text: string, sender: 'bot' | 'user') => {
@@ -85,78 +61,77 @@ const ChatBot = () => {
     
     addMessage(inputText, 'user');
     setInputText("");
+    setConversationCount(prev => prev + 1);
     
-    // Start screening after initial greeting
-    if (currentStep === 'greeting') {
-      setTimeout(() => {
-        addMessage("I'd like to ask you a few quick questions to better understand how you're doing. This will only take a minute.", 'bot');
+    // Continue conversation for several exchanges before offering assessment
+    setTimeout(() => {
+      if (conversationCount < 4) {
+        // Continue conversation
+        const randomPrompt = conversationPrompts[Math.floor(Math.random() * conversationPrompts.length)];
+        addMessage(randomPrompt, 'bot');
+      } else if (conversationCount === 4) {
+        // Offer assessment after meaningful conversation
+        addMessage("You've been really open with me, and I appreciate that. To better understand how you're doing and provide more personalized support, would you be interested in taking a quick mental health assessment? It covers areas like academic stress, mood, and overall wellbeing.", 'bot');
         setTimeout(() => {
-          setCurrentStep('screening');
-          addMessage(screeningQuestions[0].question, 'bot');
-        }, 1000);
-      }, 1000);
-    }
+          addMessage("The assessment is completely private and will help me give you better tips and resources.", 'bot');
+        }, 2000);
+      } else {
+        // Provide supportive responses
+        const supportiveResponses = [
+          "I'm here to listen. How are you feeling right now about everything we've discussed?",
+          "It sounds like you're being really thoughtful about your mental health. That's a positive step.",
+          "Remember, it's okay to have difficult days. What matters is that you're reaching out and being aware of how you feel."
+        ];
+        const randomResponse = supportiveResponses[Math.floor(Math.random() * supportiveResponses.length)];
+        addMessage(randomResponse, 'bot');
+      }
+    }, 1000);
   };
 
-  const handleQuestionResponse = (score: number) => {
-    const currentQ = screeningQuestions[currentQuestion];
-    setScreeningData(prev => ({ ...prev, [currentQ.category]: score }));
+  const handleAssessmentComplete = (result: AssessmentResult) => {
+    setAssessmentResult(result);
+    setShowAssessment(false);
     
-    addMessage(currentQ.options[score], 'user');
-    
-    if (currentQuestion < screeningQuestions.length - 1) {
+    setTimeout(() => {
+      let responseMessage = "";
+      let recommendations = "";
+      
+      if (result.riskLevel === 'Critical') {
+        responseMessage = "I'm very concerned about what the assessment shows. Your safety is the most important thing right now. Please know that you're not alone and there are people who want to help you.";
+        recommendations = "I strongly encourage you to reach out for immediate support. Would you like me to connect you with emergency resources or help you book an urgent counseling session?";
+        setShowBooking(true);
+      } else if (result.riskLevel === 'High') {
+        responseMessage = "The assessment shows you're experiencing significant stress. Thank you for being honest - that takes courage.";
+        recommendations = "I'd recommend talking to a counselor who can provide personalized strategies. Would you like me to help you book a session?";
+        setShowBooking(true);
+      } else if (result.riskLevel === 'Moderate') {
+        responseMessage = "The assessment shows some areas where you might benefit from additional support. This is very common among students.";
+        recommendations = "Here are some strategies that might help: practice stress management techniques, maintain regular sleep, and consider talking to someone you trust. Would you like to explore counseling options?";
+      } else {
+        responseMessage = "Great news! The assessment shows you're managing well overall. It's wonderful that you're being proactive about your mental health.";
+        recommendations = "Keep up the good self-care habits you have in place. Continue to check in with yourself regularly and maintain your support networks.";
+      }
+      
+      addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+      
       setTimeout(() => {
-        setCurrentQuestion(prev => prev + 1);
-        addMessage(screeningQuestions[currentQuestion + 1].question, 'bot');
-      }, 1000);
-    } else {
-      // Calculate results
-      setTimeout(() => {
-        setCurrentStep('results');
-        showResults();
-      }, 1000);
-    }
+        addMessage(recommendations, 'bot');
+        
+        // Add specific tips based on scores
+        setTimeout(() => {
+          const tips = result.recommendations.slice(0, 2);
+          addMessage(`Here are some specific tips for you: ${tips.join(', ')}.`, 'bot');
+        }, 2000);
+      }, 1500);
+    }, 1000);
   };
 
-  const showResults = () => {
-    const totalScore = screeningData.stress + screeningData.anxiety + screeningData.mood + screeningData.examStress + screeningData.socialSupport + screeningData.selfHarm;
-    const suicidalRisk = screeningData.selfHarm >= 2;
-    let resultMessage = "";
-    let riskLevel = "";
-
-    // Check for suicidal ideation first
-    if (suicidalRisk) {
-      riskLevel = "Critical";
-      resultMessage = "I'm very concerned about what you've shared. Your safety is the most important thing right now. Please know that you're not alone and there are people who want to help you.";
-      
-      addMessage(`Assessment complete! Risk level: ${riskLevel}. ${resultMessage}`, 'bot');
-      
-      setTimeout(() => {
-        addMessage("I strongly encourage you to reach out for immediate support. Would you like me to connect you with emergency resources or help you book an urgent counseling session?", 'bot');
-        setShowBooking(true);
-      }, 2000);
-      return;
-    }
-
-    if (totalScore <= 6) {
-      riskLevel = "Low";
-      resultMessage = "Based on your responses, you seem to be managing well overall! It's great that you're checking in with yourself. Keep up the good self-care habits.";
-    } else if (totalScore <= 12) {
-      riskLevel = "Moderate";
-      resultMessage = "I notice you might be experiencing some stress or challenges. This is completely normal for students. Consider some relaxation techniques or talking to someone you trust.";
-    } else {
-      riskLevel = "Higher";
-      resultMessage = "Thank you for being honest about how you're feeling. It sounds like you're going through a tough time. Please know that support is available, and reaching out is a sign of strength.";
-    }
-
-    addMessage(`Assessment complete! Risk level: ${riskLevel}. ${resultMessage}`, 'bot');
-    
-    if (totalScore > 6) {
-      setTimeout(() => {
-        addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
-        setShowBooking(true);
-      }, 2000);
-    }
+  const handleTakeAssessment = () => {
+    addMessage("I'd like to take the assessment", 'user');
+    setTimeout(() => {
+      addMessage("Perfect! I'm opening our comprehensive mental health assessment for you. It will cover academic stress, mood & motivation, and safety questions. Take your time with each section.", 'bot');
+      setShowAssessment(true);
+    }, 1000);
   };
 
   const handleBooking = () => {
@@ -209,22 +184,12 @@ const ChatBot = () => {
           ))}
         </div>
 
-        {currentStep === 'screening' && currentQuestion < screeningQuestions.length && (
+        {conversationCount >= 4 && !assessmentResult && (
           <div className="space-y-2">
-            <p className="text-sm font-medium">Quick responses:</p>
-            <div className="grid grid-cols-1 gap-2">
-              {screeningQuestions[currentQuestion].options.map((option, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuestionResponse(index)}
-                  className="justify-start text-left h-auto p-3"
-                >
-                  {option}
-                </Button>
-              ))}
-            </div>
+            <Button onClick={handleTakeAssessment} className="w-full gap-2">
+              <Brain className="h-4 w-4" />
+              Take Mental Health Assessment
+            </Button>
           </div>
         )}
 
@@ -251,16 +216,21 @@ const ChatBot = () => {
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             className="flex-1"
-            disabled={currentStep === 'screening'}
           />
           <Button 
             onClick={handleSendMessage} 
             size="sm" 
-            disabled={!inputText.trim() || currentStep === 'screening'}
+            disabled={!inputText.trim()}
           >
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        
+        <AssessmentModal 
+          open={showAssessment}
+          onOpenChange={setShowAssessment}
+          onComplete={handleAssessmentComplete}
+        />
       </CardContent>
     </Card>
   );
