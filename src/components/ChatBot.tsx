@@ -94,35 +94,40 @@ const ChatBot = () => {
     
     setTimeout(() => {
       let responseMessage = "";
-      let recommendations = "";
       
       if (result.riskLevel === 'Critical') {
         responseMessage = "I'm very concerned about what the assessment shows. Your safety is the most important thing right now. Please know that you're not alone and there are people who want to help you.";
-        recommendations = "I strongly encourage you to reach out for immediate support. Would you like me to connect you with emergency resources or help you book an urgent counseling session?";
-        setShowBooking(true);
+        addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        setTimeout(() => {
+          addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
+          setShowBooking(true);
+        }, 1500);
       } else if (result.riskLevel === 'High') {
         responseMessage = "The assessment shows you're experiencing significant stress. Thank you for being honest - that takes courage.";
-        recommendations = "I'd recommend talking to a counselor who can provide personalized strategies. Would you like me to help you book a session?";
-        setShowBooking(true);
+        addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        setTimeout(() => {
+          addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
+          setShowBooking(true);
+        }, 1500);
       } else if (result.riskLevel === 'Moderate') {
         responseMessage = "The assessment shows some areas where you might benefit from additional support. This is very common among students.";
-        recommendations = "Here are some strategies that might help: practice stress management techniques, maintain regular sleep, and consider talking to someone you trust. Would you like to explore counseling options?";
+        addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        setTimeout(() => {
+          addMessage("Here are some strategies that might help: practice stress management techniques, maintain regular sleep, and consider talking to someone you trust. Would you like to explore counseling options?", 'bot');
+        }, 1500);
       } else {
         responseMessage = "Great news! The assessment shows you're managing well overall. It's wonderful that you're being proactive about your mental health.";
-        recommendations = "Keep up the good self-care habits you have in place. Continue to check in with yourself regularly and maintain your support networks.";
+        addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        setTimeout(() => {
+          addMessage("Keep up the good self-care habits you have in place. Continue to check in with yourself regularly and maintain your support networks.", 'bot');
+        }, 1500);
       }
       
-      addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
-      
+      // Add specific tips based on scores
       setTimeout(() => {
-        addMessage(recommendations, 'bot');
-        
-        // Add specific tips based on scores
-        setTimeout(() => {
-          const tips = result.recommendations.slice(0, 2);
-          addMessage(`Here are some specific tips for you: ${tips.join(', ')}.`, 'bot');
-        }, 2000);
-      }, 1500);
+        const tips = result.recommendations.slice(0, 2);
+        addMessage(`Here are some specific tips for you: ${tips.join(', ')}.`, 'bot');
+      }, 3000);
     }, 1000);
   };
 
@@ -193,11 +198,11 @@ const ChatBot = () => {
           </div>
         )}
 
-        {showBooking && (
+        {(showBooking || (assessmentResult && ['High', 'Critical'].includes(assessmentResult.riskLevel))) && (
           <div className="space-y-2">
             <Button onClick={handleBooking} className="w-full gap-2">
               <Calendar className="h-4 w-4" />
-              Book a Counseling Session
+              Book a counselling session now
             </Button>
             <Button 
               variant="outline" 

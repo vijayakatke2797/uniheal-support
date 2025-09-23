@@ -29,6 +29,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
     suicidalRisk: 0
   });
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [moduleAnswers, setModuleAnswers] = useState<number[]>([]);
 
   const academicQuestions = [
     {
@@ -90,17 +91,25 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
 
   const handleAnswer = (score: number) => {
     const questions = getCurrentQuestions();
+    const newAnswers = [...moduleAnswers, score];
+    setModuleAnswers(newAnswers);
     
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      // Module complete, update scores
-      const moduleScore = Math.round((score + 1) * questions.length / questions.length);
+      // Module complete, calculate total score for this module
+      const totalScore = newAnswers.reduce((sum, answer) => sum + answer, 0);
+      const maxPossible = questions.length * (questions[0].options.length - 1);
+      const normalizedScore = Math.round((totalScore / maxPossible) * 10); // Score out of 10
+      
       setScores(prev => ({
         ...prev,
         [currentModule === 'academic' ? 'academicStress' : 
-         currentModule === 'mood' ? 'moodMotivation' : 'suicidalRisk']: moduleScore
+         currentModule === 'mood' ? 'moodMotivation' : 'suicidalRisk']: normalizedScore
       }));
+      
+      // Reset for next module
+      setModuleAnswers([]);
       
       // Move to next module
       if (currentModule === 'academic') {
@@ -116,11 +125,12 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
   };
 
   const calculateResults = () => {
-    const totalScore = scores.academicStress + scores.moodMotivation + (scores.suicidalRisk * 2);
+    const totalScore = scores.academicStress + scores.moodMotivation + scores.suicidalRisk;
     let riskLevel: AssessmentResult['riskLevel'] = 'Low';
     let recommendations: string[] = [];
 
-    if (scores.suicidalRisk >= 2) {
+    // Safety questions have highest priority
+    if (scores.suicidalRisk >= 6) { // High suicidal risk threshold
       riskLevel = 'Critical';
       recommendations = [
         "Immediate professional support is recommended",
@@ -128,20 +138,20 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
         "Reach out to a trusted friend or family member",
         "Consider urgent counseling appointment"
       ];
-    } else if (totalScore >= 12) {
+    } else if (scores.suicidalRisk >= 3 || totalScore >= 20) { // High overall stress or moderate suicidal risk
       riskLevel = 'High';
       recommendations = [
         "Consider scheduling a counseling session",
-        "Practice stress management techniques",
+        "Practice stress management techniques", 
         "Maintain regular sleep and exercise routine",
         "Connect with friends and family for support"
       ];
-    } else if (totalScore >= 8) {
+    } else if (totalScore >= 12) {
       riskLevel = 'Moderate';
       recommendations = [
         "Try relaxation techniques and mindfulness",
         "Consider talking to someone you trust",
-        "Maintain healthy study-life balance",
+        "Maintain healthy study-life balance", 
         "Use campus wellness resources"
       ];
     } else {
@@ -174,6 +184,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
   const handleClose = () => {
     setCurrentModule('start');
     setCurrentQuestion(0);
+    setModuleAnswers([]);
     setScores({ academicStress: 0, moodMotivation: 0, suicidalRisk: 0 });
     onOpenChange(false);
   };
