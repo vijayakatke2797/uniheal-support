@@ -16,7 +16,12 @@ const StudentPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentials, setCredentials] = useState({ studentId: "", password: "" });
   const [showAssessment, setShowAssessment] = useState(false);
-  const [activeTab, setActiveTab] = useState('chat');
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,8 +156,8 @@ const StudentPortal = () => {
             {/* Navigation Items */}
             <div className="flex items-center gap-1">
               <Button
-                variant={activeTab === 'chat' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('chat')}
+                variant="ghost"
+                onClick={() => scrollToSection('chat-section')}
                 size="sm"
                 className="gap-2"
               >
@@ -160,8 +165,8 @@ const StudentPortal = () => {
                 Chat
               </Button>
               <Button
-                variant={activeTab === 'assessment' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('assessment')}
+                variant="ghost"
+                onClick={() => scrollToSection('assessment-section')}
                 size="sm"
                 className="gap-2"
               >
@@ -169,8 +174,8 @@ const StudentPortal = () => {
                 Assessment
               </Button>
               <Button
-                variant={activeTab === 'resources' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('resources')}
+                variant="ghost"
+                onClick={() => scrollToSection('resources-section')}
                 size="sm"
                 className="gap-2"
               >
@@ -178,8 +183,8 @@ const StudentPortal = () => {
                 Resources
               </Button>
               <Button
-                variant={activeTab === 'calendar' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('calendar')}
+                variant="ghost"
+                onClick={() => scrollToSection('calendar-section')}
                 size="sm"
                 className="gap-2"
               >
@@ -200,98 +205,94 @@ const StudentPortal = () => {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-6">
-        <div className="grid lg:grid-cols-12 gap-8">
-          {/* Chat Section */}
-          <div className="lg:col-span-8">
-            <ChatBot />
-          </div>
+      <main className="container mx-auto px-4 py-6 space-y-8">
+        {/* Chat Section */}
+        <section id="chat-section" className="w-full">
+          <ChatBot />
+        </section>
 
-          {/* Right Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Welcome Card */}
-            <Card className="bg-gradient-card shadow-card">
-              <CardHeader>
-                <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
-                <CardDescription>
-                  Take a moment to check in with yourself. Sprout is here to listen and support you.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Badge variant="secondary" className="w-full justify-center py-2">
-                    ✨ Confidential & Anonymous
-                  </Badge>
-                  <Badge variant="outline" className="w-full justify-center py-2">
-                    🌱 Judgment-Free Zone
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Assessment */}
-            <Card className="bg-gradient-card shadow-card">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  Mental Health Check
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => setShowAssessment(true)}
-                  className="w-full gap-2"
-                  size="lg"
-                >
-                  <Activity className="h-5 w-5" />
-                  Take Assessment
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Quick Resources */}
-            <QuickResources />
-          </div>
-        </div>
-
-        {/* Bottom Section - Resources and Calendar */}
-        <div className="mt-12 grid md:grid-cols-2 gap-8">
-          {/* Emergency Resources */}
-          <EmergencyResources />
-          
-          {/* Session Calendar */}
+        {/* Assessment Section */}
+        <section id="assessment-section" className="grid lg:grid-cols-3 gap-6">
           <Card className="bg-gradient-card shadow-card">
             <CardHeader>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Activity className="h-6 w-6" />
-                Session Calendar
-              </CardTitle>
+              <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
               <CardDescription>
-                Your scheduled and completed counseling sessions
+                Take a moment to check in with yourself. Sprout is here to listen and support you.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Activity className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">No Sessions Yet</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    Book your first counseling session to get started
-                  </p>
-                  <Button 
-                    onClick={() => window.location.href = '/booking'}
-                    className="gap-2"
-                  >
-                    <Activity className="h-4 w-4" />
-                    Book First Session
-                  </Button>
-                </div>
+              <div className="space-y-3">
+                <Badge variant="secondary" className="w-full justify-center py-2">
+                  ✨ Confidential & Anonymous
+                </Badge>
+                <Badge variant="outline" className="w-full justify-center py-2">
+                  🌱 Judgment-Free Zone
+                </Badge>
               </div>
             </CardContent>
           </Card>
-        </div>
+
+          <Card className="bg-gradient-card shadow-card">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                Mental Health Check
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setShowAssessment(true)}
+                className="w-full gap-2"
+                size="lg"
+              >
+                <Activity className="h-5 w-5" />
+                Take Assessment
+              </Button>
+            </CardContent>
+          </Card>
+
+          <QuickResources />
+        </section>
+
+        {/* Resources Section */}
+        <section id="resources-section" className="grid md:grid-cols-2 gap-8">
+          <EmergencyResources />
+          
+          {/* Session Calendar */}
+          <div id="calendar-section">
+            <Card className="bg-gradient-card shadow-card">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Activity className="h-6 w-6" />
+                  Session Calendar
+                </CardTitle>
+                <CardDescription>
+                  Your scheduled and completed counseling sessions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Activity className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">No Sessions Yet</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Book your first counseling session to get started
+                    </p>
+                    <Button 
+                      onClick={() => window.location.href = '/booking'}
+                      className="gap-2"
+                    >
+                      <Activity className="h-4 w-4" />
+                      Book First Session
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </main>
       
       <AssessmentModal 
