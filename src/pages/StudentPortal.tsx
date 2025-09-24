@@ -234,13 +234,13 @@ const StudentPortal = () => {
       <main className="container mx-auto px-4 py-6">
         {/* Chat Section with Welcome Card on Right */}
         <section id="chat-section" className="grid lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 relative z-10">
             <ChatBot />
           </div>
           
           {/* Welcome Card - Right Side */}
-          <div className="lg:col-span-1">
-            <Card className="bg-gradient-card shadow-card h-fit">
+          <div className="lg:col-span-1 relative z-20">
+            <Card className="bg-gradient-card shadow-card h-fit sticky top-20 animate-float">
               <CardHeader>
                 <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
                 <CardDescription>
@@ -261,71 +261,303 @@ const StudentPortal = () => {
           </div>
         </section>
 
-        {/* Assessment and Resources Section */}
-        <section id="assessment-section" className="grid md:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-gradient-card shadow-card">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Brain className="h-5 w-5" />
-                Mental Health Check
-              </CardTitle>
-              <CardDescription>
-                Take a confidential assessment to understand your mental health
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => setShowAssessment(true)}
-                className="w-full gap-2"
-                size="lg"
-              >
-                <Activity className="h-5 w-5" />
-                Take Assessment
-              </Button>
-            </CardContent>
-          </Card>
-
-          <QuickResources />
-        </section>
-
-        {/* Emergency Resources and Calendar Section */}
-        <section id="resources-section" className="grid md:grid-cols-2 gap-6">
-          <EmergencyResources />
+        {/* Mental Health Assessment Section */}
+        <section id="assessment-section" className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold flex items-center justify-center gap-3 mb-4">
+              <Brain className="h-8 w-8 text-primary" />
+              Mental Health Assessment
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Take a confidential assessment to understand your mental health and get personalized recommendations
+            </p>
+          </div>
           
-          {/* Session Calendar */}
-          <div id="calendar-section">
-            <Card className="bg-gradient-card shadow-card">
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in">
               <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Activity className="h-6 w-6" />
-                  Session Calendar
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-blue-500" />
+                  Anxiety Assessment
                 </CardTitle>
                 <CardDescription>
-                  Your scheduled and completed counseling sessions
+                  Evaluate your anxiety levels and triggers
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Activity className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-lg font-medium mb-2">No Sessions Yet</h3>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      Book your first counseling session to get started
-                    </p>
-                    <Button 
-                      onClick={() => navigate('/booking')}
-                      className="gap-2"
-                    >
-                      <Activity className="h-4 w-4" />
-                      Book First Session
-                    </Button>
+                <Button 
+                  onClick={() => setShowAssessment(true)}
+                  className="w-full gap-2"
+                  variant="outline"
+                >
+                  <Activity className="h-4 w-4" />
+                  Start Test (5 min)
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-100">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-green-500" />
+                  Depression Screening
+                </CardTitle>
+                <CardDescription>
+                  Check your mood and emotional wellbeing
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  onClick={() => setShowAssessment(true)}
+                  className="w-full gap-2"
+                  variant="outline"
+                >
+                  <Activity className="h-4 w-4" />
+                  Start Test (7 min)
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-purple-500" />
+                  Stress Evaluation
+                </CardTitle>
+                <CardDescription>
+                  Assess your stress patterns and coping
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  onClick={() => setShowAssessment(true)}
+                  className="w-full gap-2"
+                  variant="outline"
+                >
+                  <Activity className="h-4 w-4" />
+                  Start Test (4 min)
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Resources Section */}
+        <section id="resources-section" className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold flex items-center justify-center gap-3 mb-4">
+              <Heart className="h-8 w-8 text-primary" />
+              Healing Resources
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Instant relief tools and techniques for stress, anxiety, and emotional support
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Headphones className="h-5 w-5 text-blue-500" />
+                  Breathing Exercises
+                </CardTitle>
+                <CardDescription>
+                  Guided breathing techniques for instant calm
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Headphones className="h-8 w-8 text-blue-500" />
                   </div>
+                </div>
+                <Button className="w-full gap-2" variant="outline">
+                  <Headphones className="h-4 w-4" />
+                  Start Breathing
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-100">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-green-500" />
+                  Relaxation Videos
+                </CardTitle>
+                <CardDescription>
+                  Calming videos and meditation guides
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Activity className="h-8 w-8 text-green-500" />
+                  </div>
+                </div>
+                <Button className="w-full gap-2" variant="outline">
+                  <Activity className="h-4 w-4" />
+                  Watch Videos
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-purple-500" />
+                  Quick Tips
+                </CardTitle>
+                <CardDescription>
+                  Daily mental health tips and strategies
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Brain className="h-8 w-8 text-purple-500" />
+                  </div>
+                </div>
+                <Button className="w-full gap-2" variant="outline">
+                  <Brain className="h-4 w-4" />
+                  Get Tips
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Emergency & Feedback Section */}
+        <section className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="md:col-span-1">
+            <EmergencyResources />
+          </div>
+          
+          <div className="md:col-span-2">
+            <Card className="bg-gradient-card shadow-card h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="h-5 w-5" />
+                  Student Feedback
+                </CardTitle>
+                <CardDescription>
+                  See how UniHeal has helped other students
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <Card className="bg-white/50 hover-scale animate-fade-in">
+                    <CardContent className="pt-4">
+                      <p className="text-sm italic mb-2">"The chatbot really helped me during my exam stress. Available 24/7!"</p>
+                      <p className="text-xs text-muted-foreground">- Anonymous Student, Engineering</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/50 hover-scale animate-fade-in delay-100">
+                    <CardContent className="pt-4">
+                      <p className="text-sm italic mb-2">"Assessment helped me understand my anxiety patterns better."</p>
+                      <p className="text-xs text-muted-foreground">- Anonymous Student, Medicine</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/50 hover-scale animate-fade-in delay-200">
+                    <CardContent className="pt-4">
+                      <p className="text-sm italic mb-2">"Booking counseling sessions was so easy and confidential."</p>
+                      <p className="text-xs text-muted-foreground">- Anonymous Student, Arts</p>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </section>
+
+        {/* Calendar & Booking Section */}
+        <section id="calendar-section" className="grid md:grid-cols-2 gap-6">
+          <Card className="bg-gradient-card shadow-card">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Activity className="h-6 w-6" />
+                Session Calendar
+              </CardTitle>
+              <CardDescription>
+                Your scheduled and completed counseling sessions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Mock session data - in real app, this would come from backend */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Individual Counseling</p>
+                      <p className="text-xs text-muted-foreground">Tomorrow, 2:00 PM</p>
+                    </div>
+                    <Badge variant="secondary">Pending</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Group Therapy</p>
+                      <p className="text-xs text-muted-foreground">Last Week</p>
+                    </div>
+                    <Badge className="bg-green-500">Completed</Badge>
+                  </div>
+                </div>
+                
+                <div className="text-center py-4">
+                  <Button 
+                    onClick={() => navigate('/booking')}
+                    className="gap-2"
+                  >
+                    <Activity className="h-4 w-4" />
+                    Book New Session
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Book Session Quick Card */}
+          <Card className="bg-gradient-card shadow-card">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Heart className="h-6 w-6" />
+                Quick Booking
+              </CardTitle>
+              <CardDescription>
+                Schedule your next counseling session
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="hover-scale">
+                    Individual
+                  </Button>
+                  <Button variant="outline" size="sm" className="hover-scale">
+                    Group
+                  </Button>
+                  <Button variant="outline" size="sm" className="hover-scale">
+                    Emergency
+                  </Button>
+                  <Button variant="outline" size="sm" className="hover-scale">
+                    Follow-up
+                  </Button>
+                </div>
+                
+                <div className="text-center">
+                  <Button 
+                    onClick={() => navigate('/booking')}
+                    className="w-full gap-2"
+                    size="lg"
+                  >
+                    <Activity className="h-5 w-5" />
+                    Open Full Booking
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
       </main>
       
