@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity, Calendar, Clock, CheckCircle, Plus } from "lucide-react";
+import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity, Calendar, Clock, CheckCircle, Plus, Trophy, Target, Award } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
 import EmergencyResources from "@/components/EmergencyResources";
 import QuickResources from "@/components/QuickResources";
+import { Progress } from "@/components/ui/progress";
 import AssessmentModal from "@/components/AssessmentModal";
 
 const StudentPortal = () => {
@@ -428,63 +429,7 @@ const StudentPortal = () => {
           <QuickResources />
         </section>
 
-        {/* Emergency & Feedback Section */}
-        <section className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-1">
-            <EmergencyResources />
-          </div>
-          
-          <div className="md:col-span-2">
-            <Card className="bg-gradient-card shadow-card h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
-                  Student Feedback
-                </CardTitle>
-                <CardDescription>
-                  See how UniHeal has helped other students
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid gap-3">
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 hover-scale animate-fade-in">
-                      <div className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                        <div>
-                          <p className="font-medium text-blue-800">"UniHeal helped me manage my anxiety during finals week. The breathing exercises were a lifesaver!"</p>
-                          <p className="text-sm text-blue-600 mt-1">- Sarah, Psychology Major</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 hover-scale animate-fade-in delay-100">
-                      <div className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                        <div>
-                          <p className="font-medium text-green-800">"The counseling sessions gave me tools to cope with stress. I feel so much better now."</p>
-                          <p className="text-sm text-green-600 mt-1">- Mike, Engineering Student</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 hover-scale animate-fade-in delay-200">
-                      <div className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
-                        <div>
-                          <p className="font-medium text-purple-800">"Having access to 24/7 support made all the difference in my mental health journey."</p>
-                          <p className="text-sm text-purple-600 mt-1">- Alex, Business Student</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Calendar & Booking Section */}
+        {/* My Sessions & Quick Actions Section */}
         <section id="calendar-section" className="grid lg:grid-cols-2 gap-6">
           {/* Calendar */}
           <Card className="bg-gradient-card shadow-card">
@@ -542,7 +487,7 @@ const StudentPortal = () => {
             </CardContent>
           </Card>
           
-          {/* Quick Booking */}
+          {/* Quick Actions */}
           <Card className="bg-gradient-card shadow-card">
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
@@ -559,38 +504,42 @@ const StudentPortal = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
                     onClick={() => setShowBookingModal(true)}
                   >
                     <Calendar className="h-5 w-5" />
                     <span className="text-xs">Book Session</span>
+                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5">3 slots</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
                     onClick={() => scrollToSection('resources-section')}
                   >
                     <Heart className="h-5 w-5" />
                     <span className="text-xs">Resources</span>
+                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-green-500">7 days</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
                     onClick={() => setShowAssessment(true)}
                   >
                     <Brain className="h-5 w-5" />
                     <span className="text-xs">Assessment</span>
+                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-blue-500">New</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
                     onClick={() => scrollToSection('chat-section')}
                   >
                     <Headphones className="h-5 w-5" />
                     <span className="text-xs">Chat Support</span>
+                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-green-500">Active</Badge>
                   </Button>
                 </div>
                 
@@ -602,6 +551,89 @@ const StudentPortal = () => {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* Progress & Achievements Section */}
+        <section className="grid md:grid-cols-3 gap-6">
+          <div className="md:col-span-1">
+            <EmergencyResources />
+          </div>
+          
+          <div className="md:col-span-2">
+            <Card className="bg-gradient-card shadow-card h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5" />
+                  Progress & Achievements
+                </CardTitle>
+                <CardDescription>
+                  Visual progress on mental health assessments and consistency badges
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Mental Health Progress */}
+                  <div>
+                    <h4 className="font-medium mb-3">Assessment Progress</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm font-medium">Anxiety Assessment</span>
+                          <span className="text-sm text-muted-foreground">85% improvement</span>
+                        </div>
+                        <Progress value={85} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm font-medium">Depression Screening</span>
+                          <span className="text-sm text-muted-foreground">70% improvement</span>
+                        </div>
+                        <Progress value={70} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm font-medium">Stress Management</span>
+                          <span className="text-sm text-muted-foreground">92% improvement</span>
+                        </div>
+                        <Progress value={92} className="h-2" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Achievement Badges */}
+                  <div>
+                    <h4 className="font-medium mb-3">Recent Achievements</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Trophy className="w-3 h-3" />
+                        Completed 7 days of journaling
+                      </Badge>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Heart className="w-3 h-3" />
+                        Wellness check completed
+                      </Badge>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Target className="w-3 h-3" />
+                        3 sessions attended
+                      </Badge>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Activity className="w-3 h-3" />
+                        Meditation streak: 5 days
+                      </Badge>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Award className="w-3 h-3" />
+                        Self-care champion
+                      </Badge>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        Regular session attendee
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       </main>
       
