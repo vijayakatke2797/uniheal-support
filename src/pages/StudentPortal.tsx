@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,21 @@ const StudentPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentials, setCredentials] = useState({ studentId: "", password: "" });
   const [showAssessment, setShowAssessment] = useState(false);
+
+  // Check for session persistence on mount
+  useEffect(() => {
+    const savedSession = localStorage.getItem('uniheal-session');
+    if (savedSession) {
+      const { studentId, timestamp } = JSON.parse(savedSession);
+      // Session valid for 24 hours
+      if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+        setCredentials({ studentId, password: "****" });
+        setIsLoggedIn(true);
+      } else {
+        localStorage.removeItem('uniheal-session');
+      }
+    }
+  }, []);
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -28,7 +43,18 @@ const StudentPortal = () => {
     // Mock authentication - in real app, validate against backend
     if (credentials.studentId && credentials.password) {
       setIsLoggedIn(true);
+      // Save session for persistence
+      localStorage.setItem('uniheal-session', JSON.stringify({
+        studentId: credentials.studentId,
+        timestamp: Date.now()
+      }));
     }
+  };
+
+  const handleSignOut = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('uniheal-session');
+    setCredentials({ studentId: "", password: "" });
   };
 
   if (!isLoggedIn) {
@@ -195,7 +221,7 @@ const StudentPortal = () => {
 
             <Button 
               variant="outline" 
-              onClick={() => setIsLoggedIn(false)}
+              onClick={handleSignOut}
               size="sm"
               className="bg-white/20 border-white/30 hover:bg-white/30"
             >
@@ -205,39 +231,47 @@ const StudentPortal = () => {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-6 space-y-8">
-        {/* Chat Section */}
-        <section id="chat-section" className="w-full">
-          <ChatBot />
+      <main className="container mx-auto px-4 py-6">
+        {/* Chat Section with Welcome Card on Right */}
+        <section id="chat-section" className="grid lg:grid-cols-4 gap-6 mb-8">
+          <div className="lg:col-span-3">
+            <ChatBot />
+          </div>
+          
+          {/* Welcome Card - Right Side */}
+          <div className="lg:col-span-1">
+            <Card className="bg-gradient-card shadow-card h-fit">
+              <CardHeader>
+                <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
+                <CardDescription>
+                  Take a moment to check in with yourself. Sprout is here to listen and support you.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Badge variant="secondary" className="w-full justify-center py-2">
+                    ✨ Confidential & Anonymous
+                  </Badge>
+                  <Badge variant="outline" className="w-full justify-center py-2">
+                    🌱 Judgment-Free Zone
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </section>
 
-        {/* Assessment Section */}
-        <section id="assessment-section" className="grid lg:grid-cols-3 gap-6">
-          <Card className="bg-gradient-card shadow-card">
-            <CardHeader>
-              <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
-              <CardDescription>
-                Take a moment to check in with yourself. Sprout is here to listen and support you.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Badge variant="secondary" className="w-full justify-center py-2">
-                  ✨ Confidential & Anonymous
-                </Badge>
-                <Badge variant="outline" className="w-full justify-center py-2">
-                  🌱 Judgment-Free Zone
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
+        {/* Assessment and Resources Section */}
+        <section id="assessment-section" className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-gradient-card shadow-card">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Brain className="h-5 w-5" />
                 Mental Health Check
               </CardTitle>
+              <CardDescription>
+                Take a confidential assessment to understand your mental health
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Button 
@@ -254,8 +288,8 @@ const StudentPortal = () => {
           <QuickResources />
         </section>
 
-        {/* Resources Section */}
-        <section id="resources-section" className="grid md:grid-cols-2 gap-8">
+        {/* Emergency Resources and Calendar Section */}
+        <section id="resources-section" className="grid md:grid-cols-2 gap-6">
           <EmergencyResources />
           
           {/* Session Calendar */}
@@ -281,7 +315,7 @@ const StudentPortal = () => {
                       Book your first counseling session to get started
                     </p>
                     <Button 
-                      onClick={() => window.location.href = '/booking'}
+                      onClick={() => navigate('/booking')}
                       className="gap-2"
                     >
                       <Activity className="h-4 w-4" />
