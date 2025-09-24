@@ -48,9 +48,11 @@ const ChatBot = () => {
     "It sounds like you're dealing with a lot right now. Have you been able to talk to anyone else about this?"
   ];
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change - contained within chat area only
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    }
   }, [messages]);
 
   const addMessage = (text: string, sender: 'bot' | 'user') => {
@@ -162,54 +164,66 @@ const ChatBot = () => {
   };
 
   return (
-    <Card className="h-[480px] flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border-2 border-blue-200 overflow-hidden">
+    <Card className="h-[500px] flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border-2 border-blue-200 overflow-hidden">
       <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <img 
-              src={mascotImage} 
-              alt="Sprout - UniHeal Mascot" 
-              className="w-14 h-14 rounded-full bg-white/20 p-1 animate-pulse" 
-            />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 rounded-full animate-ping"></div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <img 
+                src={mascotImage} 
+                alt="Sprout - UniHeal Mascot" 
+                className="w-16 h-16 rounded-full bg-white/20 p-1 animate-pulse" 
+              />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 rounded-full animate-ping"></div>
+            </div>
+            <div>
+              <CardTitle className="text-white font-semibold">Chat with Sprout 🌱</CardTitle>
+              <CardDescription className="text-white/90 text-sm">Your caring mental health companion</CardDescription>
+            </div>
           </div>
-          <div>
-            <CardTitle className="text-white font-semibold">Chat with Sprout 🌱</CardTitle>
-            <CardDescription className="text-white/90 text-sm">Your caring mental health companion</CardDescription>
-          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => window.location.href = '/counsellor'}
+            className="bg-white/10 text-white border-white/20 hover:bg-white/20 text-xs"
+          >
+            Counsellor Login
+          </Button>
         </div>
       </CardHeader>
       
-      <CardContent className="flex-1 flex flex-col gap-3 p-4">
-        <ScrollArea className="flex-1 bg-gradient-to-b from-white/50 to-white/30 rounded-xl p-3 backdrop-blur-sm border border-blue-300">
-          <div className="space-y-3">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-              >
+      <CardContent className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
+        <div className="flex-1 bg-gradient-to-b from-white/50 to-white/30 rounded-xl border border-blue-300 overflow-hidden">
+          <ScrollArea className="h-full p-3">
+            <div className="space-y-3">
+              {messages.map((message) => (
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${
-                    message.sender === 'user'
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
-                      : 'bg-white border-2 border-blue-200 text-gray-800'
-                  }`}
+                  key={message.id}
+                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
                 >
-                  {message.sender === 'bot' && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <img src={mascotImage} alt="Sprout" className="w-4 h-4 rounded-full" />
-                      <Badge className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200">
-                        Sprout
-                      </Badge>
-                    </div>
-                  )}
-                  <p className="text-sm leading-relaxed">{message.text}</p>
+                  <div
+                    className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${
+                      message.sender === 'user'
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                        : 'bg-white border-2 border-blue-200 text-gray-800'
+                    }`}
+                  >
+                    {message.sender === 'bot' && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <img src={mascotImage} alt="Sprout" className="w-4 h-4 rounded-full" />
+                        <Badge className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200">
+                          Sprout
+                        </Badge>
+                      </div>
+                    )}
+                    <p className="text-sm leading-relaxed">{message.text}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+        </div>
 
         {conversationCount >= 4 && !assessmentResult && (
           <div className="space-y-2">
