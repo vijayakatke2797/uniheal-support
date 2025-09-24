@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity, Calendar, Clock, CheckCircle, Plus, Trophy, Target, Award } from "lucide-react";
+import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity, Calendar, Clock, CheckCircle, Plus, Trophy, Target, Award, Zap, Star, Crown, Sparkles } from "lucide-react";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import sproutCharacter from "@/assets/sprout-character.png";
 import ChatBot from "@/components/ChatBot";
 import EmergencyResources from "@/components/EmergencyResources";
 import QuickResources from "@/components/QuickResources";
@@ -487,66 +489,117 @@ const StudentPortal = () => {
             </CardContent>
           </Card>
           
-          {/* Quick Actions */}
-          <Card className="bg-gradient-card shadow-card">
+          {/* Character Growth & Achievement Badges */}
+          <Card className="bg-gradient-card shadow-card overflow-hidden">
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
-                <Activity className="h-6 w-6" />
-                Quick Actions
+                <Sparkles className="h-6 w-6" />
+                Growing Your Sprout
               </CardTitle>
               <CardDescription>
-                Fast access to common mental health resources
+                Build your mental wellness character through daily actions
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Character Level Progress */}
+                <div className="text-center relative">
+                  <div className="relative inline-block">
+                    <img 
+                      src={sproutCharacter} 
+                      alt="Your growing sprout character" 
+                      className="w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-green-100 to-green-200 p-2"
+                    />
+                    <Badge className="absolute -top-1 -right-1 bg-yellow-500 text-white px-2 py-1 text-xs">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Lvl 4
+                    </Badge>
+                  </div>
+                  <div className="mb-2">
+                    <span className="text-sm font-medium">Mental Health Journey</span>
+                    <div className="flex items-center justify-center gap-2 mt-1">
+                      <span className="text-xs text-muted-foreground">60 / 100 XP</span>
+                    </div>
+                  </div>
+                  <Progress value={60} className="h-3 bg-green-100" />
+                </div>
+
+                {/* Achievement Widgets Grid */}
                 <div className="grid grid-cols-2 gap-3">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
-                    onClick={() => setShowBookingModal(true)}
-                  >
-                    <Calendar className="h-5 w-5" />
-                    <span className="text-xs">Book Session</span>
-                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5">3 slots</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
+                  {/* Journaling Streak */}
+                  <div 
+                    className="bg-gradient-to-br from-purple-400 to-purple-600 p-4 rounded-xl text-white hover-scale cursor-pointer relative overflow-hidden"
                     onClick={() => scrollToSection('resources-section')}
                   >
-                    <Heart className="h-5 w-5" />
-                    <span className="text-xs">Resources</span>
-                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-green-500">7 days</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
+                    <div className="absolute top-2 right-2">
+                      <Zap className="h-4 w-4 text-yellow-300" />
+                    </div>
+                    <div className="text-lg font-bold">7 days</div>
+                    <div className="text-xs opacity-90">Journaling</div>
+                    <div className="text-xs opacity-75 mt-1">Don't stop!</div>
+                    <Badge className="absolute bottom-2 right-2 bg-white/20 text-white text-xs px-2">
+                      <Trophy className="w-3 h-3 mr-1" />
+                      Streak
+                    </Badge>
+                  </div>
+
+                  {/* Meditation Master */}
+                  <div 
+                    className="bg-gradient-to-br from-blue-400 to-blue-600 p-4 rounded-xl text-white hover-scale cursor-pointer relative overflow-hidden"
+                    onClick={() => setShowBookingModal(true)}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Star className="h-4 w-4 text-yellow-300" />
+                    </div>
+                    <div className="text-lg font-bold">5 days</div>
+                    <div className="text-xs opacity-90">Meditation</div>
+                    <div className="text-xs opacity-75 mt-1">Mindful warrior</div>
+                    <Badge className="absolute bottom-2 right-2 bg-white/20 text-white text-xs px-2">
+                      <Heart className="w-3 h-3 mr-1" />
+                      Active
+                    </Badge>
+                  </div>
+
+                  {/* Session Champion */}
+                  <div 
+                    className="bg-gradient-to-br from-green-400 to-green-600 p-4 rounded-xl text-white hover-scale cursor-pointer relative overflow-hidden"
                     onClick={() => setShowAssessment(true)}
                   >
-                    <Brain className="h-5 w-5" />
-                    <span className="text-xs">Assessment</span>
-                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-blue-500">New</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="hover-scale p-4 h-auto flex flex-col gap-2 relative"
+                    <div className="absolute top-2 right-2">
+                      <Crown className="h-4 w-4 text-yellow-300" />
+                    </div>
+                    <div className="text-lg font-bold">3 sessions</div>
+                    <div className="text-xs opacity-90">Attended</div>
+                    <div className="text-xs opacity-75 mt-1">Champion</div>
+                    <Badge className="absolute bottom-2 right-2 bg-white/20 text-white text-xs px-2">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      Booked
+                    </Badge>
+                  </div>
+
+                  {/* Wellness Explorer */}
+                  <div 
+                    className="bg-gradient-to-br from-orange-400 to-orange-600 p-4 rounded-xl text-white hover-scale cursor-pointer relative overflow-hidden"
                     onClick={() => scrollToSection('chat-section')}
                   >
-                    <Headphones className="h-5 w-5" />
-                    <span className="text-xs">Chat Support</span>
-                    <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5 bg-green-500">Active</Badge>
-                  </Button>
+                    <div className="absolute top-2 right-2">
+                      <Sparkles className="h-4 w-4 text-yellow-300" />
+                    </div>
+                    <div className="text-lg font-bold">Explorer</div>
+                    <div className="text-xs opacity-90">Wellness</div>
+                    <div className="text-xs opacity-75 mt-1">Keep going!</div>
+                    <Badge className="absolute bottom-2 right-2 bg-white/20 text-white text-xs px-2">
+                      <Headphones className="w-3 h-3 mr-1" />
+                      Chat
+                    </Badge>
+                  </div>
                 </div>
                 
-                <div className="bg-muted/30 p-4 rounded-lg text-center">
-                  <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
-                  <p className="text-sm font-medium mb-1">Crisis Support Available</p>
-                  <p className="text-xs text-muted-foreground">24/7 emergency mental health assistance</p>
+                {/* Crisis Support */}
+                <div className="bg-red-50 border border-red-200 p-4 rounded-lg text-center">
+                  <Shield className="h-6 w-6 text-red-600 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-red-800 mb-1">Crisis Support Available</p>
+                  <p className="text-xs text-red-600">24/7 emergency mental health assistance</p>
                 </div>
               </div>
             </CardContent>
@@ -567,36 +620,125 @@ const StudentPortal = () => {
                   Progress & Achievements
                 </CardTitle>
                 <CardDescription>
-                  Visual progress on mental health assessments and consistency badges
+                  Visual progress on mental health assessments with interactive charts
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {/* Mental Health Progress */}
+                  {/* Mental Health Progress Charts */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Weekly Progress Line Chart */}
+                    <div>
+                      <h4 className="font-medium mb-3">Weekly Wellness Score</h4>
+                      <div className="h-48">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={[
+                            { day: 'Mon', score: 65 },
+                            { day: 'Tue', score: 72 },
+                            { day: 'Wed', score: 68 },
+                            { day: 'Thu', score: 78 },
+                            { day: 'Fri', score: 85 },
+                            { day: 'Sat', score: 82 },
+                            { day: 'Sun', score: 88 }
+                          ]}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                            <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" />
+                            <YAxis stroke="hsl(var(--muted-foreground))" />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: 'hsl(var(--card))', 
+                                border: '1px solid hsl(var(--border))',
+                                borderRadius: '8px'
+                              }} 
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey="score" 
+                              stroke="hsl(var(--primary))" 
+                              strokeWidth={3}
+                              dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Assessment Progress Pie Chart */}
+                    <div>
+                      <h4 className="font-medium mb-3">Assessment Coverage</h4>
+                      <div className="h-48">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { name: 'Anxiety', value: 85, color: '#3b82f6' },
+                                { name: 'Depression', value: 70, color: '#10b981' },
+                                { name: 'Stress', value: 92, color: '#8b5cf6' }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={40}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                            >
+                              <Cell fill="#3b82f6" />
+                              <Cell fill="#10b981" />
+                              <Cell fill="#8b5cf6" />
+                            </Pie>
+                            <Tooltip 
+                              formatter={(value) => [`${value}%`, 'Progress']}
+                              contentStyle={{ 
+                                backgroundColor: 'hsl(var(--card))', 
+                                border: '1px solid hsl(var(--border))',
+                                borderRadius: '8px'
+                              }} 
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="flex justify-center gap-4 text-xs mt-2">
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                          <span>Anxiety (85%)</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                          <span>Depression (70%)</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                          <span>Stress (92%)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Activity Stats Bar Chart */}
                   <div>
-                    <h4 className="font-medium mb-3">Assessment Progress</h4>
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium">Anxiety Assessment</span>
-                          <span className="text-sm text-muted-foreground">85% improvement</span>
-                        </div>
-                        <Progress value={85} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium">Depression Screening</span>
-                          <span className="text-sm text-muted-foreground">70% improvement</span>
-                        </div>
-                        <Progress value={70} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium">Stress Management</span>
-                          <span className="text-sm text-muted-foreground">92% improvement</span>
-                        </div>
-                        <Progress value={92} className="h-2" />
-                      </div>
+                    <h4 className="font-medium mb-3">Monthly Activity Overview</h4>
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={[
+                          { activity: 'Sessions', count: 8 },
+                          { activity: 'Assessments', count: 3 },
+                          { activity: 'Journal', count: 15 },
+                          { activity: 'Meditation', count: 12 },
+                          { activity: 'Resources', count: 20 }
+                        ]}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                          <XAxis dataKey="activity" stroke="hsl(var(--muted-foreground))" />
+                          <YAxis stroke="hsl(var(--muted-foreground))" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'hsl(var(--card))', 
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px'
+                            }} 
+                          />
+                          <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
                   
@@ -606,27 +748,27 @@ const StudentPortal = () => {
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary" className="flex items-center gap-1">
                         <Trophy className="w-3 h-3" />
-                        Completed 7 days of journaling
+                        7-day journal streak
                       </Badge>
                       <Badge variant="secondary" className="flex items-center gap-1">
                         <Heart className="w-3 h-3" />
-                        Wellness check completed
+                        Wellness milestone
                       </Badge>
                       <Badge variant="secondary" className="flex items-center gap-1">
                         <Target className="w-3 h-3" />
-                        3 sessions attended
+                        Session regular
                       </Badge>
                       <Badge variant="secondary" className="flex items-center gap-1">
                         <Activity className="w-3 h-3" />
-                        Meditation streak: 5 days
+                        Meditation master
                       </Badge>
                       <Badge variant="secondary" className="flex items-center gap-1">
                         <Award className="w-3 h-3" />
                         Self-care champion
                       </Badge>
                       <Badge variant="secondary" className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        Regular session attendee
+                        <Star className="w-3 h-3" />
+                        Level 4 achieved
                       </Badge>
                     </div>
                   </div>
