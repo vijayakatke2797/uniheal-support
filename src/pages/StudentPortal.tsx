@@ -16,6 +16,7 @@ const StudentPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentials, setCredentials] = useState({ studentId: "", password: "" });
   const [showAssessment, setShowAssessment] = useState(false);
+  const [activeTab, setActiveTab] = useState('chat');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,8 +130,6 @@ const StudentPortal = () => {
       </div>
     );
   }
-
-  const [activeTab, setActiveTab] = useState('chat');
 
   return (
     <div className="min-h-screen bg-gradient-soft">
