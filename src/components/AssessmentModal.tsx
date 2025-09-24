@@ -30,6 +30,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
   });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [moduleAnswers, setModuleAnswers] = useState<number[]>([]);
+  const [isIndividualTest, setIsIndividualTest] = useState(false);
 
   const academicQuestions = [
     {
@@ -111,23 +112,33 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
       // Reset for next module
       setModuleAnswers([]);
       
-      // Move to next module
-      if (currentModule === 'academic') {
-        setCurrentModule('mood');
-        setCurrentQuestion(0);
-      } else if (currentModule === 'mood') {
-        setCurrentModule('safety');
-        setCurrentQuestion(0);
-      } else {
-        // Single module completed, show results for this module only
+      // Check if this is an individual test or full assessment
+      if (isIndividualTest) {
+        // Individual test completed, show results for this module only
         calculateSingleModuleResults();
+      } else {
+        // Full assessment - move to next module
+        if (currentModule === 'academic') {
+          setCurrentModule('mood');
+          setCurrentQuestion(0);
+        } else if (currentModule === 'mood') {
+          setCurrentModule('safety');
+          setCurrentQuestion(0);
+        } else {
+          // All modules completed, show full results
+          calculateResults();
+        }
       }
     }
   };
 
   const calculateSingleModuleResults = () => {
-    const moduleScore = scores[currentModule === 'academic' ? 'academicStress' : 
-                               currentModule === 'mood' ? 'moodMotivation' : 'suicidalRisk'];
+    // Calculate the module score from current answers
+    const totalScore = moduleAnswers.reduce((sum, answer) => sum + answer, 0);
+    const questions = getCurrentQuestions();
+    const maxPossible = questions.length * (questions[0].options.length - 1);
+    const moduleScore = Math.round((totalScore / maxPossible) * 10);
+    
     let riskLevel: AssessmentResult['riskLevel'] = 'Low';
     let recommendations: string[] = [];
 
@@ -264,10 +275,11 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
     onComplete(result);
   };
 
-  const handleStartModule = (module: 'academic' | 'mood' | 'safety') => {
+  const handleStartModule = (module: 'academic' | 'mood' | 'safety', individual = true) => {
     setCurrentModule(module);
     setCurrentQuestion(0);
     setModuleAnswers([]);
+    setIsIndividualTest(individual);
   };
 
   const handleClose = () => {
@@ -275,6 +287,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
     setCurrentQuestion(0);
     setModuleAnswers([]);
     setScores({ academicStress: 0, moodMotivation: 0, suicidalRisk: 0 });
+    setIsIndividualTest(false);
     onOpenChange(false);
   };
 
@@ -331,7 +344,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
         </Card>
       </div>
 
-      <Button onClick={() => handleStartModule('academic')} className="w-full">
+      <Button onClick={() => handleStartModule('academic', false)} className="w-full">
         Start Complete Assessment
       </Button>
     </div>

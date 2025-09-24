@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,7 @@ const ChatBot = () => {
   const [showAssessment, setShowAssessment] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [assessmentResult, setAssessmentResult] = useState<AssessmentResult | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const conversationPrompts = [
     "That sounds challenging. Can you tell me more about what's been going on?",
@@ -46,6 +47,11 @@ const ChatBot = () => {
     "I appreciate your openness. What usually helps you when you're going through tough times?",
     "It sounds like you're dealing with a lot right now. Have you been able to talk to anyone else about this?"
   ];
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const addMessage = (text: string, sender: 'bot' | 'user') => {
     const newMessage: Message = {
@@ -201,6 +207,7 @@ const ChatBot = () => {
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
 
