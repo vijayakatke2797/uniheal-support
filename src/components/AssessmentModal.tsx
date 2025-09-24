@@ -289,6 +289,86 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
     );
   };
 
+  const renderResults = () => {
+    const totalPossibleScore = 30; // Max possible score across all modules (10 each)
+    const overallProgress = Math.round((scores.academicStress + scores.moodMotivation + scores.suicidalRisk) / totalPossibleScore * 100);
+    
+    const getRiskColor = (level: string) => {
+      switch (level) {
+        case 'Critical': return 'text-red-600';
+        case 'High': return 'text-orange-600';
+        case 'Moderate': return 'text-yellow-600';
+        default: return 'text-green-600';
+      }
+    };
+
+    const calculateResult = () => {
+      const totalScore = scores.academicStress + scores.moodMotivation + scores.suicidalRisk;
+      let riskLevel: AssessmentResult['riskLevel'] = 'Low';
+      
+      if (scores.suicidalRisk >= 6) {
+        riskLevel = 'Critical';
+      } else if (scores.suicidalRisk >= 3 || totalScore >= 20) {
+        riskLevel = 'High';
+      } else if (totalScore >= 12) {
+        riskLevel = 'Moderate';
+      }
+      
+      return { totalScore, riskLevel };
+    };
+
+    const { totalScore, riskLevel } = calculateResult();
+
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h3 className="text-lg font-semibold">Assessment Complete</h3>
+          <p className="text-muted-foreground">Here are your results</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Academic Stress</span>
+              <span className="text-sm text-muted-foreground">{scores.academicStress}/10</span>
+            </div>
+            <Progress value={scores.academicStress * 10} className="w-full" />
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Mood & Motivation</span>
+              <span className="text-sm text-muted-foreground">{scores.moodMotivation}/10</span>
+            </div>
+            <Progress value={scores.moodMotivation * 10} className="w-full" />
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Safety Risk</span>
+              <span className="text-sm text-muted-foreground">{scores.suicidalRisk}/10</span>
+            </div>
+            <Progress value={scores.suicidalRisk * 10} className="w-full" />
+          </div>
+        </div>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3 mb-3">
+            <AlertTriangle className={`h-5 w-5 ${getRiskColor(riskLevel)}`} />
+            <div>
+              <h4 className="font-medium">Risk Level: <span className={getRiskColor(riskLevel)}>{riskLevel}</span></h4>
+              <p className="text-sm text-muted-foreground">Overall Score: {totalScore}/30</p>
+            </div>
+          </div>
+        </Card>
+
+        <Button onClick={handleClose} className="w-full">
+          Return to Chat
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -304,6 +384,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
 
         {currentModule === 'start' && renderStartScreen()}
         {(['academic', 'mood', 'safety'].includes(currentModule)) && renderQuestion()}
+        {currentModule === 'results' && renderResults()}
       </DialogContent>
     </Dialog>
   );

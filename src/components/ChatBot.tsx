@@ -98,17 +98,19 @@ const ChatBot = () => {
       if (result.riskLevel === 'Critical') {
         responseMessage = "I'm very concerned about what the assessment shows. Your safety is the most important thing right now. Please know that you're not alone and there are people who want to help you.";
         addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        // Show counseling buttons immediately for Critical risk
         setTimeout(() => {
           addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
           setShowBooking(true);
-        }, 1500);
+        }, 500);
       } else if (result.riskLevel === 'High') {
         responseMessage = "The assessment shows you're experiencing significant stress. Thank you for being honest - that takes courage.";
         addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
+        // Show counseling buttons immediately for High risk
         setTimeout(() => {
           addMessage("Would you like me to help you book a counseling session? It's completely confidential and might be helpful.", 'bot');
           setShowBooking(true);
-        }, 1500);
+        }, 500);
       } else if (result.riskLevel === 'Moderate') {
         responseMessage = "The assessment shows some areas where you might benefit from additional support. This is very common among students.";
         addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
@@ -128,7 +130,7 @@ const ChatBot = () => {
         const tips = result.recommendations.slice(0, 2);
         addMessage(`Here are some specific tips for you: ${tips.join(', ')}.`, 'bot');
       }, 3000);
-    }, 1000);
+    }, 500);
   };
 
   const handleTakeAssessment = () => {
