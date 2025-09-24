@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity } from "lucide-react";
+import { ArrowLeft, LogIn, Leaf, Headphones, Shield, Brain, Heart, Activity, Calendar, Clock, CheckCircle, Plus } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
 import EmergencyResources from "@/components/EmergencyResources";
 import QuickResources from "@/components/QuickResources";
@@ -16,6 +18,20 @@ const StudentPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentials, setCredentials] = useState({ studentId: "", password: "" });
   const [showAssessment, setShowAssessment] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [bookingDetails, setBookingDetails] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    concerns: "",
+    urgency: "normal"
+  });
+  const [sessions, setSessions] = useState([
+    { id: 1, date: "2024-01-15", time: "10:00 AM", status: "pending", counselor: "Dr. Smith" },
+    { id: 2, date: "2024-01-08", time: "02:00 PM", status: "completed", counselor: "Dr. Johnson" },
+  ]);
 
   // Check for session persistence on mount
   useEffect(() => {
@@ -31,6 +47,7 @@ const StudentPortal = () => {
       }
     }
   }, []);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -55,6 +72,51 @@ const StudentPortal = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('uniheal-session');
     setCredentials({ studentId: "", password: "" });
+  };
+
+  // Helper functions
+  const getQuickDates = () => {
+    const dates = [];
+    const today = new Date();
+    
+    for (let i = 1; i <= 6; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      
+      if (date.getDay() !== 0 && date.getDay() !== 6) { // Skip weekends
+        dates.push({
+          value: date.toISOString().split('T')[0],
+          day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+          date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        });
+      }
+      
+      if (dates.length === 3) break;
+    }
+    
+    return dates;
+  };
+
+  const getQuickTimes = () => {
+    return ["10:00 AM", "2:00 PM", "4:00 PM", "6:00 PM"];
+  };
+
+  const handleQuickBooking = () => {
+    const newSession = {
+      id: sessions.length + 1,
+      date: selectedDate,
+      time: selectedTime,
+      status: "pending" as const,
+      counselor: "Dr. Wilson"
+    };
+    
+    setSessions([...sessions, newSession]);
+    setShowBookingModal(false);
+    setSelectedDate("");
+    setSelectedTime("");
+    
+    // Show success message or navigate
+    alert("Session booked successfully!");
   };
 
   if (!isLoggedIn) {
@@ -217,6 +279,15 @@ const StudentPortal = () => {
                 <Activity className="h-4 w-4" />
                 Calendar
               </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setShowBookingModal(true)}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Quick Book
+              </Button>
             </div>
 
             <Button 
@@ -231,15 +302,15 @@ const StudentPortal = () => {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 space-y-8">
         {/* Chat Section with Welcome Card on Right */}
-        <section id="chat-section" className="grid lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3 relative z-10">
+        <section id="chat-section" className="grid lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 relative">
             <ChatBot />
           </div>
           
           {/* Welcome Card - Right Side */}
-          <div className="lg:col-span-1 relative z-20">
+          <div className="lg:col-span-1">
             <Card className="bg-gradient-card shadow-card h-fit sticky top-20 animate-float">
               <CardHeader>
                 <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
@@ -262,7 +333,7 @@ const StudentPortal = () => {
         </section>
 
         {/* Mental Health Assessment Section */}
-        <section id="assessment-section" className="mb-12">
+        <section id="assessment-section">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold flex items-center justify-center gap-3 mb-4">
               <Brain className="h-8 w-8 text-primary" />
@@ -343,7 +414,7 @@ const StudentPortal = () => {
         </section>
 
         {/* Resources Section */}
-        <section id="resources-section" className="mb-12">
+        <section id="resources-section">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold flex items-center justify-center gap-3 mb-4">
               <Heart className="h-8 w-8 text-primary" />
@@ -354,80 +425,11 @@ const StudentPortal = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Headphones className="h-5 w-5 text-blue-500" />
-                  Breathing Exercises
-                </CardTitle>
-                <CardDescription>
-                  Guided breathing techniques for instant calm
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-4">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Headphones className="h-8 w-8 text-blue-500" />
-                  </div>
-                </div>
-                <Button className="w-full gap-2" variant="outline">
-                  <Headphones className="h-4 w-4" />
-                  Start Breathing
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-100">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-green-500" />
-                  Relaxation Videos
-                </CardTitle>
-                <CardDescription>
-                  Calming videos and meditation guides
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-4">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Activity className="h-8 w-8 text-green-500" />
-                  </div>
-                </div>
-                <Button className="w-full gap-2" variant="outline">
-                  <Activity className="h-4 w-4" />
-                  Watch Videos
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-card shadow-card hover-scale animate-fade-in delay-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-purple-500" />
-                  Quick Tips
-                </CardTitle>
-                <CardDescription>
-                  Daily mental health tips and strategies
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-4">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Brain className="h-8 w-8 text-purple-500" />
-                  </div>
-                </div>
-                <Button className="w-full gap-2" variant="outline">
-                  <Brain className="h-4 w-4" />
-                  Get Tips
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <QuickResources />
         </section>
 
         {/* Emergency & Feedback Section */}
-        <section className="grid md:grid-cols-3 gap-6 mb-12">
+        <section className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
             <EmergencyResources />
           </div>
@@ -444,27 +446,38 @@ const StudentPortal = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4">
-                  <Card className="bg-white/50 hover-scale animate-fade-in">
-                    <CardContent className="pt-4">
-                      <p className="text-sm italic mb-2">"The chatbot really helped me during my exam stress. Available 24/7!"</p>
-                      <p className="text-xs text-muted-foreground">- Anonymous Student, Engineering</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="bg-white/50 hover-scale animate-fade-in delay-100">
-                    <CardContent className="pt-4">
-                      <p className="text-sm italic mb-2">"Assessment helped me understand my anxiety patterns better."</p>
-                      <p className="text-xs text-muted-foreground">- Anonymous Student, Medicine</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="bg-white/50 hover-scale animate-fade-in delay-200">
-                    <CardContent className="pt-4">
-                      <p className="text-sm italic mb-2">"Booking counseling sessions was so easy and confidential."</p>
-                      <p className="text-xs text-muted-foreground">- Anonymous Student, Arts</p>
-                    </CardContent>
-                  </Card>
+                <div className="space-y-4">
+                  <div className="grid gap-3">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 hover-scale animate-fade-in">
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-blue-800">"UniHeal helped me manage my anxiety during finals week. The breathing exercises were a lifesaver!"</p>
+                          <p className="text-sm text-blue-600 mt-1">- Sarah, Psychology Major</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 hover-scale animate-fade-in delay-100">
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-green-800">"The counseling sessions gave me tools to cope with stress. I feel so much better now."</p>
+                          <p className="text-sm text-green-600 mt-1">- Mike, Engineering Student</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 hover-scale animate-fade-in delay-200">
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-purple-800">"Having access to 24/7 support made all the difference in my mental health journey."</p>
+                          <p className="text-sm text-purple-600 mt-1">- Alex, Business Student</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -472,44 +485,56 @@ const StudentPortal = () => {
         </section>
 
         {/* Calendar & Booking Section */}
-        <section id="calendar-section" className="grid md:grid-cols-2 gap-6">
+        <section id="calendar-section" className="grid lg:grid-cols-2 gap-6">
+          {/* Calendar */}
           <Card className="bg-gradient-card shadow-card">
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
-                <Activity className="h-6 w-6" />
-                Session Calendar
+                <Calendar className="h-6 w-6" />
+                My Sessions
               </CardTitle>
               <CardDescription>
-                Your scheduled and completed counseling sessions
+                Track your upcoming and past counseling sessions
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {/* Mock session data - in real app, this would come from backend */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm">Individual Counseling</p>
-                      <p className="text-xs text-muted-foreground">Tomorrow, 2:00 PM</p>
+              <div className="space-y-3">
+                {sessions.map((session) => (
+                  <div 
+                    key={session.id} 
+                    className={`p-4 rounded-lg border ${
+                      session.status === 'pending' 
+                        ? 'bg-blue-50 border-blue-200' 
+                        : 'bg-green-50 border-green-200'
+                    } hover-scale animate-fade-in`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-sm">
+                          {new Date(session.date).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}
+                        </p>
+                        <p className="text-sm text-muted-foreground">{session.time} - {session.counselor}</p>
+                      </div>
+                      <Badge 
+                        variant={session.status === 'pending' ? 'secondary' : 'default'}
+                        className={session.status === 'completed' ? 'bg-green-500' : ''}
+                      >
+                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary">Pending</Badge>
                   </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm">Group Therapy</p>
-                      <p className="text-xs text-muted-foreground">Last Week</p>
-                    </div>
-                    <Badge className="bg-green-500">Completed</Badge>
-                  </div>
-                </div>
+                ))}
                 
-                <div className="text-center py-4">
+                <div className="text-center pt-4">
                   <Button 
-                    onClick={() => navigate('/booking')}
+                    onClick={() => setShowBookingModal(true)}
                     className="gap-2"
                   >
-                    <Activity className="h-4 w-4" />
+                    <Plus className="h-4 w-4" />
                     Book New Session
                   </Button>
                 </div>
@@ -517,43 +542,62 @@ const StudentPortal = () => {
             </CardContent>
           </Card>
           
-          {/* Book Session Quick Card */}
+          {/* Quick Booking */}
           <Card className="bg-gradient-card shadow-card">
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
-                <Heart className="h-6 w-6" />
-                Quick Booking
+                <Activity className="h-6 w-6" />
+                Quick Actions
               </CardTitle>
               <CardDescription>
-                Schedule your next counseling session
+                Fast access to common mental health resources
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="hover-scale">
-                    Individual
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    onClick={() => setShowBookingModal(true)}
+                  >
+                    <Calendar className="h-5 w-5" />
+                    <span className="text-xs">Book Session</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="hover-scale">
-                    Group
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    onClick={() => scrollToSection('resources-section')}
+                  >
+                    <Heart className="h-5 w-5" />
+                    <span className="text-xs">Resources</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="hover-scale">
-                    Emergency
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    onClick={() => setShowAssessment(true)}
+                  >
+                    <Brain className="h-5 w-5" />
+                    <span className="text-xs">Assessment</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="hover-scale">
-                    Follow-up
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="hover-scale p-4 h-auto flex flex-col gap-2"
+                    onClick={() => scrollToSection('chat-section')}
+                  >
+                    <Headphones className="h-5 w-5" />
+                    <span className="text-xs">Chat Support</span>
                   </Button>
                 </div>
                 
-                <div className="text-center">
-                  <Button 
-                    onClick={() => navigate('/booking')}
-                    className="w-full gap-2"
-                    size="lg"
-                  >
-                    <Activity className="h-5 w-5" />
-                    Open Full Booking
-                  </Button>
+                <div className="bg-muted/30 p-4 rounded-lg text-center">
+                  <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <p className="text-sm font-medium mb-1">Crisis Support Available</p>
+                  <p className="text-xs text-muted-foreground">24/7 emergency mental health assistance</p>
                 </div>
               </div>
             </CardContent>
@@ -561,12 +605,90 @@ const StudentPortal = () => {
         </section>
       </main>
       
+      {/* Quick Booking Modal */}
+      <Dialog open={showBookingModal} onOpenChange={setShowBookingModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Quick Book Session
+            </DialogTitle>
+            <DialogDescription>
+              Schedule your counseling session quickly and easily
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Quick Date Selection */}
+            <div>
+              <Label className="text-base font-medium mb-3 block">Available This Week</Label>
+              <div className="grid grid-cols-3 gap-3">
+                {getQuickDates().map((date) => (
+                  <Button
+                    key={date.value}
+                    variant={selectedDate === date.value ? "default" : "outline"}
+                    onClick={() => setSelectedDate(date.value)}
+                    className="h-auto p-3 flex flex-col"
+                  >
+                    <span className="text-xs font-medium">{date.day}</span>
+                    <span className="text-sm">{date.date}</span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {selectedDate && (
+              <div>
+                <Label className="text-base font-medium mb-3 block">Available Times</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {getQuickTimes().map((time) => (
+                    <Button
+                      key={time}
+                      variant={selectedTime === time ? "default" : "outline"}
+                      onClick={() => setSelectedTime(time)}
+                      size="sm"
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedDate && selectedTime && (
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <h4 className="font-medium text-primary mb-2">Session Confirmed</h4>
+                <p className="text-sm text-primary/80">
+                  {selectedDate} at {selectedTime}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowBookingModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleQuickBooking}
+                disabled={!selectedDate || !selectedTime}
+                className="flex-1"
+              >
+                Book Session
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
       <AssessmentModal 
         open={showAssessment}
         onOpenChange={setShowAssessment}
         onComplete={(result) => {
           console.log('Assessment completed:', result);
-          // Could integrate with chatbot or show results
         }}
       />
     </div>
