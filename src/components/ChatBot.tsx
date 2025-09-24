@@ -166,29 +166,19 @@ const ChatBot = () => {
   return (
     <Card className="h-[500px] flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border-2 border-blue-200 overflow-hidden">
       <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <img 
-                src={mascotImage} 
-                alt="Sprout - UniHeal Mascot" 
-                className="w-16 h-16 rounded-full bg-white/20 p-1 animate-pulse" 
-              />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 rounded-full animate-ping"></div>
-            </div>
-            <div>
-              <CardTitle className="text-white font-semibold">Chat with Sprout 🌱</CardTitle>
-              <CardDescription className="text-white/90 text-sm">Your caring mental health companion</CardDescription>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <img 
+              src={mascotImage} 
+              alt="Sprout - UniHeal Mascot" 
+              className="w-16 h-16 rounded-full bg-white/20 p-1 animate-pulse" 
+            />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 rounded-full animate-ping"></div>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => window.location.href = '/counsellor'}
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20 text-xs"
-          >
-            Counsellor Login
-          </Button>
+          <div>
+            <CardTitle className="text-white font-semibold">Chat with Sprout 🌱</CardTitle>
+            <CardDescription className="text-white/90 text-sm">Your caring mental health companion</CardDescription>
+          </div>
         </div>
       </CardHeader>
       
