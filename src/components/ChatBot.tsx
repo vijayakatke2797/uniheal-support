@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Calendar, Brain } from "lucide-react";
 import mascotImage from "@/assets/sprout-mascot.png";
 import AssessmentModal from "./AssessmentModal";
@@ -155,16 +156,16 @@ const ChatBot = () => {
   };
 
   return (
-    <Card className="h-[480px] flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 shadow-lg border-2 border-gradient-to-r from-blue-200 to-purple-200 overflow-hidden">
-      <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 text-white">
+    <Card className="h-[480px] flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border-2 border-blue-200 overflow-hidden">
+      <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img 
               src={mascotImage} 
               alt="Sprout - UniHeal Mascot" 
-              className="w-10 h-10 rounded-full bg-white/20 p-1 animate-pulse" 
+              className="w-14 h-14 rounded-full bg-white/20 p-1 animate-pulse" 
             />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 rounded-full animate-ping"></div>
           </div>
           <div>
             <CardTitle className="text-white font-semibold">Chat with Sprout 🌱</CardTitle>
@@ -174,38 +175,40 @@ const ChatBot = () => {
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col gap-3 p-4">
-        <div className="flex-1 overflow-y-auto space-y-3 bg-gradient-to-b from-white/50 to-white/30 rounded-xl p-3 backdrop-blur-sm border border-white/40">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-            >
+        <ScrollArea className="flex-1 bg-gradient-to-b from-white/50 to-white/30 rounded-xl p-3 backdrop-blur-sm border border-blue-300">
+          <div className="space-y-3">
+            {messages.map((message) => (
               <div
-                className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${
-                  message.sender === 'user'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                    : 'bg-white border-2 border-green-200 text-gray-800'
-                }`}
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
               >
-                {message.sender === 'bot' && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <img src={mascotImage} alt="Sprout" className="w-4 h-4 rounded-full" />
-                    <Badge className="text-xs bg-green-100 text-green-700 hover:bg-green-200">
-                      Sprout
-                    </Badge>
-                  </div>
-                )}
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <div
+                  className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${
+                    message.sender === 'user'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                      : 'bg-white border-2 border-blue-200 text-gray-800'
+                  }`}
+                >
+                  {message.sender === 'bot' && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <img src={mascotImage} alt="Sprout" className="w-4 h-4 rounded-full" />
+                      <Badge className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200">
+                        Sprout
+                      </Badge>
+                    </div>
+                  )}
+                  <p className="text-sm leading-relaxed">{message.text}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </ScrollArea>
 
         {conversationCount >= 4 && !assessmentResult && (
           <div className="space-y-2">
             <Button 
               onClick={handleTakeAssessment} 
-              className="w-full gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover-scale"
+              className="w-full gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover-scale"
             >
               <Brain className="h-4 w-4" />
               Take Mental Health Assessment ✨
@@ -217,7 +220,7 @@ const ChatBot = () => {
           <div className="space-y-2">
             <Button 
               onClick={handleBooking} 
-              className="w-full gap-2 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white shadow-lg hover-scale"
+              className="w-full gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover-scale"
             >
               <Calendar className="h-4 w-4" />
               Book a counselling session now 📅
@@ -225,7 +228,7 @@ const ChatBot = () => {
             <Button 
               variant="outline" 
               onClick={() => setShowBooking(false)} 
-              className="w-full border-2 border-purple-200 text-purple-600 hover:bg-purple-50"
+              className="w-full border-2 border-blue-200 text-blue-600 hover:bg-blue-50"
             >
               Not right now
             </Button>
@@ -238,13 +241,13 @@ const ChatBot = () => {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            className="flex-1 rounded-xl border-2 border-blue-200 focus:border-purple-400 bg-white/70 backdrop-blur-sm"
+            className="flex-1 rounded-xl border-2 border-blue-200 focus:border-blue-400 bg-white/70 backdrop-blur-sm"
           />
           <Button 
             onClick={handleSendMessage} 
             size="sm" 
             disabled={!inputText.trim()}
-            className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-xl px-4 shadow-lg hover-scale"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl px-4 shadow-lg hover-scale"
           >
             <Send className="h-4 w-4" />
           </Button>

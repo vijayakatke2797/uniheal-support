@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Users, Shield, BarChart3, Heart, Leaf, Headphones, Menu, Star, Quote, ArrowRight, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
 import EmergencyResources from "@/components/EmergencyResources";
 import mascotImage from "@/assets/sprout-mascot.png";
+import wellnessHeroBg from "@/assets/wellness-hero-bg.jpg";
+import studentsSupport from "@/assets/students-support.jpg";
+import counselorOffice from "@/assets/counselor-office.jpg";
 import { useState } from "react";
 
 const Index = () => {
@@ -96,60 +99,75 @@ const Index = () => {
 
       <main className="container mx-auto px-4 pb-12 pt-24">
         {/* Hero Section */}
-        <section id="hero" className="text-center py-16 mb-16">
-          <div className="flex justify-center mb-8">
-            <img 
-              src={mascotImage} 
-              alt="Sprout - UniHeal Mascot" 
-              className="w-32 h-32 drop-shadow-lg"
-            />
-          </div>
+        <section id="hero" className="relative text-center py-16 mb-16 overflow-hidden rounded-3xl">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+            style={{ backgroundImage: `url(${wellnessHeroBg})` }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-green-500/10"></div>
           
-          <h1 className="text-5xl font-bold text-foreground mb-6">
-            Your Mental Health
-            <span className="block bg-gradient-hero bg-clip-text text-transparent">
-              Matters Here
-            </span>
-          </h1>
-          
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            UniHeal provides a safe, supportive environment where students can access mental health resources, 
-            connect with counselors, and find the support they deserve.
-          </p>
+          <div className="relative z-10">
+            <div className="flex justify-center mb-8">
+              <img 
+                src={mascotImage} 
+                alt="Sprout - UniHeal Mascot" 
+                className="w-32 h-32 drop-shadow-lg"
+              />
+            </div>
+            
+            <h1 className="text-5xl font-bold text-foreground mb-6">
+              Your Mental Health
+              <span className="block bg-gradient-hero bg-clip-text text-transparent">
+                Matters Here
+              </span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              UniHeal provides a safe, supportive environment where students can access mental health resources, 
+              connect with counselors, and find the support they deserve.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/student')}
-              className="gap-2 shadow-hover hover:shadow-hover transition-all"
-            >
-              <Users className="h-5 w-5" />
-              Login as Student
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              onClick={() => navigate('/counsellor')}
-              className="gap-2"
-            >
-              <Heart className="h-5 w-5" />
-              Login as Counselor
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              onClick={() => navigate('/admin')}
-              className="gap-2"
-            >
-              <BarChart3 className="h-5 w-5" />
-              Login as Admin
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/student')}
+                className="gap-2 shadow-hover hover:shadow-hover transition-all"
+              >
+                <Users className="h-5 w-5" />
+                Login as Student
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={() => navigate('/counsellor')}
+                className="gap-2"
+              >
+                <Heart className="h-5 w-5" />
+                Login as Counselor
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={() => navigate('/admin')}
+                className="gap-2"
+              >
+                <BarChart3 className="h-5 w-5" />
+                Login as Admin
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Features Section */}
         <section id="features" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          <Card className="bg-gradient-card shadow-card hover:shadow-hover transition-all">
+          <Card className="bg-gradient-card shadow-card hover:shadow-hover transition-all overflow-hidden">
+            <div className="relative h-32 bg-gradient-to-br from-green-100 to-green-200">
+              <img 
+                src={studentsSupport} 
+                alt="Students supporting each other" 
+                className="w-full h-full object-cover opacity-60"
+              />
+            </div>
             <CardHeader>
               <div className="w-12 h-12 bg-pastel-mint rounded-lg flex items-center justify-center mb-3">
                 <Users className="h-6 w-6 text-green-700" />
@@ -173,7 +191,14 @@ const Index = () => {
             </CardHeader>
           </Card>
 
-          <Card className="bg-gradient-card shadow-card hover:shadow-hover transition-all">
+          <Card className="bg-gradient-card shadow-card hover:shadow-hover transition-all overflow-hidden">
+            <div className="relative h-32 bg-gradient-to-br from-blue-100 to-purple-200">
+              <img 
+                src={counselorOffice} 
+                alt="Professional counseling office" 
+                className="w-full h-full object-cover opacity-60"
+              />
+            </div>
             <CardHeader>
               <div className="w-12 h-12 bg-pastel-pink rounded-lg flex items-center justify-center mb-3">
                 <Shield className="h-6 w-6 text-pink-700" />

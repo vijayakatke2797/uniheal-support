@@ -119,9 +119,97 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
         setCurrentModule('safety');
         setCurrentQuestion(0);
       } else {
-        calculateResults();
+        // Single module completed, show results for this module only
+        calculateSingleModuleResults();
       }
     }
+  };
+
+  const calculateSingleModuleResults = () => {
+    const moduleScore = scores[currentModule === 'academic' ? 'academicStress' : 
+                               currentModule === 'mood' ? 'moodMotivation' : 'suicidalRisk'];
+    let riskLevel: AssessmentResult['riskLevel'] = 'Low';
+    let recommendations: string[] = [];
+
+    if (currentModule === 'safety') {
+      if (moduleScore >= 6) {
+        riskLevel = 'Critical';
+        recommendations = [
+          "Immediate professional support is recommended",
+          "Contact emergency services or crisis hotline",
+          "Reach out to a trusted friend or family member"
+        ];
+      } else if (moduleScore >= 3) {
+        riskLevel = 'High';
+        recommendations = [
+          "Consider scheduling a counseling session",
+          "Talk to someone you trust about how you're feeling"
+        ];
+      } else if (moduleScore >= 1) {
+        riskLevel = 'Moderate';
+        recommendations = [
+          "Monitor your feelings closely",
+          "Use campus wellness resources if needed"
+        ];
+      } else {
+        recommendations = [
+          "Continue taking care of your mental health",
+          "Stay connected with your support network"
+        ];
+      }
+    } else if (currentModule === 'academic') {
+      if (moduleScore >= 7) {
+        riskLevel = 'High';
+        recommendations = [
+          "Consider time management strategies",
+          "Talk to academic advisors about workload",
+          "Practice stress-reduction techniques"
+        ];
+      } else if (moduleScore >= 4) {
+        riskLevel = 'Moderate';
+        recommendations = [
+          "Try study-life balance techniques",
+          "Consider joining study groups for support"
+        ];
+      } else {
+        recommendations = [
+          "Continue current study habits",
+          "Maintain healthy academic boundaries"
+        ];
+      }
+    } else { // mood
+      if (moduleScore >= 7) {
+        riskLevel = 'High';
+        recommendations = [
+          "Consider counseling for mood support",
+          "Practice mindfulness and self-care",
+          "Maintain social connections"
+        ];
+      } else if (moduleScore >= 4) {
+        riskLevel = 'Moderate';
+        recommendations = [
+          "Try mood-boosting activities",
+          "Consider talking to someone you trust"
+        ];
+      } else {
+        recommendations = [
+          "Continue positive mood practices",
+          "Keep monitoring your wellbeing"
+        ];
+      }
+    }
+
+    const result: AssessmentResult = {
+      academicStress: currentModule === 'academic' ? moduleScore : 0,
+      moodMotivation: currentModule === 'mood' ? moduleScore : 0,
+      suicidalRisk: currentModule === 'safety' ? moduleScore : 0,
+      totalScore: moduleScore,
+      riskLevel,
+      recommendations
+    };
+
+    setCurrentModule('results');
+    onComplete(result);
   };
 
   const calculateResults = () => {
@@ -179,6 +267,7 @@ const AssessmentModal = ({ open, onOpenChange, onComplete }: AssessmentModalProp
   const handleStartModule = (module: 'academic' | 'mood' | 'safety') => {
     setCurrentModule(module);
     setCurrentQuestion(0);
+    setModuleAnswers([]);
   };
 
   const handleClose = () => {
