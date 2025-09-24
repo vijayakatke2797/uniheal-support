@@ -116,6 +116,7 @@ const ChatBot = () => {
         addMessage(`Assessment complete! Risk level: ${result.riskLevel}. ${responseMessage}`, 'bot');
         setTimeout(() => {
           addMessage("Here are some strategies that might help: practice stress management techniques, maintain regular sleep, and consider talking to someone you trust. Would you like to explore counseling options?", 'bot');
+          setShowBooking(true);
         }, 1500);
       } else {
         responseMessage = "Great news! The assessment shows you're managing well overall. It's wonderful that you're being proactive about your mental health.";
@@ -200,7 +201,7 @@ const ChatBot = () => {
           </div>
         )}
 
-        {(showBooking || (assessmentResult && ['High', 'Critical'].includes(assessmentResult.riskLevel))) && (
+        {(showBooking || (assessmentResult && ['Moderate', 'High', 'Critical'].includes(assessmentResult.riskLevel))) && (
           <div className="space-y-2">
             <Button onClick={handleBooking} className="w-full gap-2">
               <Calendar className="h-4 w-4" />

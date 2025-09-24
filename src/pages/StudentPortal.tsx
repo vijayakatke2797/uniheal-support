@@ -201,122 +201,97 @@ const StudentPortal = () => {
       </nav>
 
       <main className="container mx-auto px-4 py-6">
-        {/* Chat Tab */}
-        {activeTab === 'chat' && (
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <ChatBot />
-            </div>
-            <div className="space-y-6">
-              <Card className="bg-gradient-card shadow-card">
-                <CardHeader>
-                  <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
-                  <CardDescription>
-                    Take a moment to check in with yourself. Sprout is here to listen and support you.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <Badge variant="secondary" className="w-full justify-center py-2">
-                      ✨ Confidential & Anonymous
-                    </Badge>
-                    <Badge variant="outline" className="w-full justify-center py-2">
-                      🌱 Judgment-Free Zone
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Chat Section */}
+          <div className="lg:col-span-8">
+            <ChatBot />
           </div>
-        )}
 
-        {/* Assessment Tab */}
-        {activeTab === 'assessment' && (
-          <div className="max-w-4xl mx-auto">
+          {/* Right Sidebar */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Welcome Card */}
             <Card className="bg-gradient-card shadow-card">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                  <Brain className="h-6 w-6" />
-                  Mental Health Assessment
-                </CardTitle>
+              <CardHeader>
+                <CardTitle className="text-lg">Welcome to Your Safe Space</CardTitle>
                 <CardDescription>
-                  Take a comprehensive assessment to understand your current mental health status
+                  Take a moment to check in with yourself. Sprout is here to listen and support you.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="text-center space-y-3">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                      <Brain className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h3 className="font-medium">Academic Stress</h3>
-                    <p className="text-sm text-muted-foreground">Assess exam pressure, competition, and grade-related stress</p>
-                  </div>
-                  <div className="text-center space-y-3">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                      <Heart className="h-8 w-8 text-green-600" />
-                    </div>
-                    <h3 className="font-medium">Mood & Motivation</h3>
-                    <p className="text-sm text-muted-foreground">Evaluate energy levels, guilt, and fear of failure</p>
-                  </div>
-                  <div className="text-center space-y-3">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                      <Shield className="h-8 w-8 text-red-600" />
-                    </div>
-                    <h3 className="font-medium">Safety Check</h3>
-                    <p className="text-sm text-muted-foreground">Important safety and suicidality screening</p>
-                  </div>
-                </div>
-                <div className="mt-8 text-center">
-                  <Button 
-                    onClick={() => setShowAssessment(true)}
-                    className="gap-2"
-                    size="lg"
-                  >
-                    <Activity className="h-5 w-5" />
-                    Start Comprehensive Assessment
-                  </Button>
+                <div className="space-y-3">
+                  <Badge variant="secondary" className="w-full justify-center py-2">
+                    ✨ Confidential & Anonymous
+                  </Badge>
+                  <Badge variant="outline" className="w-full justify-center py-2">
+                    🌱 Judgment-Free Zone
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
 
-        {/* Resources Tab */}
-        {activeTab === 'resources' && (
-          <div className="grid md:grid-cols-2 gap-8">
-            <QuickResources />
-            <EmergencyResources />
-          </div>
-        )}
-
-        {/* Calendar Tab */}
-        {activeTab === 'calendar' && (
-          <div className="max-w-4xl mx-auto">
+            {/* Quick Assessment */}
             <Card className="bg-gradient-card shadow-card">
               <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <Activity className="h-6 w-6" />
-                  Session Calendar
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Brain className="h-5 w-5" />
+                  Mental Health Check
                 </CardTitle>
-                <CardDescription>
-                  View your scheduled and completed counseling sessions
-                </CardDescription>
               </CardHeader>
-              <CardContent className="text-center py-12">
-                <div className="space-y-4">
-                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto">
-                    <Activity className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium">Calendar Integration Required</h3>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    To view and manage your counseling sessions, connect to Supabase to enable booking and calendar functionality.
-                  </p>
-                </div>
+              <CardContent>
+                <Button 
+                  onClick={() => setShowAssessment(true)}
+                  className="w-full gap-2"
+                  size="lg"
+                >
+                  <Activity className="h-5 w-5" />
+                  Take Assessment
+                </Button>
               </CardContent>
             </Card>
+
+            {/* Quick Resources */}
+            <QuickResources />
           </div>
-        )}
+        </div>
+
+        {/* Bottom Section - Resources and Calendar */}
+        <div className="mt-12 grid md:grid-cols-2 gap-8">
+          {/* Emergency Resources */}
+          <EmergencyResources />
+          
+          {/* Session Calendar */}
+          <Card className="bg-gradient-card shadow-card">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Activity className="h-6 w-6" />
+                Session Calendar
+              </CardTitle>
+              <CardDescription>
+                Your scheduled and completed counseling sessions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Activity className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">No Sessions Yet</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Book your first counseling session to get started
+                  </p>
+                  <Button 
+                    onClick={() => window.location.href = '/booking'}
+                    className="gap-2"
+                  >
+                    <Activity className="h-4 w-4" />
+                    Book First Session
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
       
       <AssessmentModal 
